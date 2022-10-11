@@ -1,9 +1,9 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
-import supertest from 'supertest'
-import path from 'path'
 import fs from 'fs'
+import path from 'path'
+import supertest from 'supertest'
 import app from '../../..'
-import resizeImage from '../../../controllers/resize-image.controller'
+// import resizeImage from '../../../controllers/csv.controller'
 
 const request = supertest(app)
 
@@ -33,11 +33,11 @@ describe('Test /api/images endpoint response', () => {
   })
 })
 
-describe('Test Sharp Api response', () => {
-  it('resize Image using sharp should work as intended.', () => {
-    expect(resizeImage(200, 200, 'fjord') instanceof Promise).toBe(true)
-  })
-  it('resize Image using sharp should fail because the image name does not exist.', () => {
-    expect(!(resizeImage(200, 200, 'any-image') instanceof Promise)).toBe(false)
-  })
-})
+// describe('Test Sharp Api response', () => {
+//   it('resize Image using sharp should work as intended.', () => {
+//     expect(resizeImage(200, 200, 'fjord') instanceof Promise).toBe(true)
+//   })
+//   it('resize Image using sharp should fail because the image name does not exist.', () => {
+//     expect(!(resizeImage(200, 200, 'any-image') instanceof Promise)).toBe(false)
+//   })
+// })
