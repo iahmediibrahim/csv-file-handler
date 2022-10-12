@@ -49,7 +49,7 @@ Here, I will show you how to run the test.
 
 `yarn test`
 
-- for the tests to run and succeed you have to keep the two sample files empty/filled (either way in the test the will be overwritten) inside the csvFiles folder, because we need the csvFiles directory in the build file for the tests to work!
+- for the tests to run and succeed you have to keep the two sample files empty/filled (either way in the test they will be overwritten) inside the csvFiles folder, because we need the csvFiles directory in the build file for the tests to work!
 
 ### Functionality
 
