@@ -27,7 +27,7 @@ This command will start the server running on port `3000`.
 
 It will create 2 csv files with sampleData right after the server starts
 
-- to test the processing of this data, you need to run the endpoint, either in the browser or inside the terminal
+- to test the processing of these data, you need to run the endpoint, either in the browser or inside the terminal
 
 ## Endpoint
 
