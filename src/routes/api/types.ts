@@ -6,12 +6,18 @@ export type CsvRow = {
   quantity: string
   brand: string
 }
-export type OutPutData = {
-  name: string
-  noOfPairs: number
-  quantity: string
-  category: string
+export type Quantity = {
+  category: number
 }
+export type AverageQuantity = {
+  category: string
+  average: number
+}
+export type MostSellingBrand = {
+  category: string
+  brand: string
+}
+export type CategoryWithBrands = { category: string[] }
 export const sampleOne: CsvRow[] = [
   {
     id: 'ID1',

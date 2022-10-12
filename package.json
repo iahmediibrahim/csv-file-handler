@@ -5,11 +5,11 @@
   "main": "index.js",
   "scripts": {
     "test": "yarn clean && yarn copy && npx tsc && jasmine",
-    "dev": "nodemon --watch \"./src/index.ts\" --exec \"npx ts-node src/index.ts\"",
+    "start": "nodemon --watch \"./src/index.ts\" --exec \"npx ts-node src/index.ts\"",
     "clean": "rimraf build/",
     "build": "yarn clean && yarn copy && npx tsc",
     "prod": "npm run build && nodemon build/index.js",
-    "copy": "copyfiles -f src/views/* build/views && copyfiles -f src/images/*.jpg build/images",
+    "copy": "copyfiles -f src/csvFiles/*.csv build/csvFiles",
     "format": "prettier --write 'src/**/*.{ts,tsx,js,jsx}'",
     "lint": "eslint . --ext .ts"
   },

@@ -1,43 +1,101 @@
-// eslint-disable-next-line import/no-extraneous-dependencies
 import fs from 'fs'
 import path from 'path'
 import supertest from 'supertest'
 import app from '../../..'
-// import resizeImage from '../../../controllers/csv.controller'
-
+import {
+  getBrandsForEachCategory,
+  getElementWithHighestOccurence
+} from '../../../businessLogic/brandsBusinessLogic'
+import { getQuantityForEachCategory } from '../../../businessLogic/categoryBusinessLogic'
+import { createCSVFile } from '../../../controllers/csv.controller'
+import { fileLineCount } from '../../../csvFileOperations/csvFileOperations'
+import { Quantity, sampleTwo } from '../../../routes/api/types'
+import { processCSVData } from './../../../controllers/csv.controller'
+import { CategoryWithBrands, sampleOne } from './../../../routes/api/types'
 const request = supertest(app)
-
-describe('Test /api/images endpoint response', () => {
-  it('Should return an Unprocessable Entity status of 422 ( user has to add width, height , filename ).', async () => {
-    const response = await request.get('/api/images')
-    expect(response.status).toBe(422)
-  })
-  it('Should return an Unprocessable Entity status of 422 ( user has to add a correct width or height or filename ).', async () => {
-    const response = await request.get('/api/images/?width=600&height=500&filename')
-    expect(response.status).toBe(422)
-  })
-  it('Should return an ok status of 200 ( image resized successfully ).', async () => {
-    const response = await request.get('/api/images/?width=600&height=500&filename=fjord')
-    expect(response.status).toBe(200)
-  })
-
-  it('Images already resized should exist.', () => {
+describe('Test business functionalitiy', () => {
+  it('Shoud create csv files.', () => {
     expect(
-      fs.existsSync(`${path.resolve(__dirname, '../../../images/thumbnails')}/fjord-600-500.jpg`)
+      createCSVFile([
+        {
+          data: sampleOne,
+          fileName: `sampleOne`
+        },
+        {
+          data: sampleTwo,
+          fileName: `sampleTwo`
+        }
+      ])
     ).toBeTruthy()
   })
-  it('Images with same name but new width and height should not exist.', () => {
+  it('Shoud Process csv files and create output files.', async () => {
+    const sampleOneLineCount = await fileLineCount({
+      fileLocation: path.resolve(__dirname, '../../../csvFiles/sampleOne.csv')
+    })
+    const sampleTwoLineCount = await fileLineCount({
+      fileLocation: path.resolve(__dirname, '../../../csvFiles/sampleTwo.csv')
+    })
+    let files = [
+      {
+        fileName: 'sampleOne',
+        lineCount: sampleOneLineCount
+      },
+      {
+        fileName: 'sampleTwo',
+        lineCount: sampleTwoLineCount
+      }
+    ]
     expect(
-      fs.existsSync(`${path.resolve(__dirname, '../../../images/thumbnails')}/fjord-300-200.jpg`)
-    ).toBeFalsy()
+      files.forEach(async (file: { fileName: string; lineCount: number }): Promise<void> => {
+        await processCSVData(file.fileName, file?.lineCount)
+      })
+    ).toBeUndefined()
+  })
+  it('getElementWithHighestOccurence should work as intended.', () => {
+    const testArr = ['Hilll-Gorczany', 'Kunze-Bernhard', 'Hilll-Gorczany', 'Hilll-Gorczany']
+    expect(getElementWithHighestOccurence(testArr)).toEqual('Hilll-Gorczany')
+  })
+
+  it('getBrandsForEachCategory should work as intended.', () => {
+    const testArr = {
+      'Intelligent Copper Knife': [
+        'Hilll-Gorczany',
+        'Kunze-Bernhard',
+        'Hilll-Gorczany',
+        'Hilll-Gorczany'
+      ],
+      'Small Granite Shoes': ['Rowe and Legros']
+    }
+    expect(getBrandsForEachCategory(sampleTwo)).toEqual(testArr as unknown as CategoryWithBrands)
+  })
+
+  it('getQuantityForEachCategory should work as intended.', () => {
+    const testArr = { 'Intelligent Copper Knife': 12, 'Small Granite Shoes': 4 }
+    expect(getQuantityForEachCategory(sampleTwo)).toEqual(testArr as unknown as Quantity)
   })
 })
 
-// describe('Test Sharp Api response', () => {
-//   it('resize Image using sharp should work as intended.', () => {
-//     expect(resizeImage(200, 200, 'fjord') instanceof Promise).toBe(true)
-//   })
-//   it('resize Image using sharp should fail because the image name does not exist.', () => {
-//     expect(!(resizeImage(200, 200, 'any-image') instanceof Promise)).toBe(false)
-//   })
-// })
+describe('Test /api/csv endpoint response', () => {
+  it('Should return status of 200', async () => {
+    const response = await request.get('/api/csv')
+    expect(response.status).toBe(200)
+  })
+  it('sampleOne should exist.', () => {
+    expect(fs.existsSync(path.resolve(__dirname, '../../../csvFiles/sampleOne.csv'))).toBeTruthy()
+  })
+  it('sampleTwo should exist.', () => {
+    expect(fs.existsSync(path.resolve(__dirname, '../../../csvFiles/sampleTwo.csv'))).toBeTruthy()
+  })
+  it('0_sampleOne should not exist.', () => {
+    expect(fs.existsSync(path.resolve(__dirname, '../../../csvFiles/0_sampleOne.csv'))).toBeTruthy()
+  })
+  it('1_sampleOne should not exist.', () => {
+    expect(fs.existsSync(path.resolve(__dirname, '../../../csvFiles/1_sampleOne.csv'))).toBeTruthy()
+  })
+  it('0_sampleTwo should not exist.', () => {
+    expect(fs.existsSync(path.resolve(__dirname, '../../../csvFiles/0_sampleTwo.csv'))).toBeTruthy()
+  })
+  it('1_sampleTwo should not exist.', () => {
+    expect(fs.existsSync(path.resolve(__dirname, '../../../csvFiles/1_sampleTwo.csv'))).toBeTruthy()
+  })
+})

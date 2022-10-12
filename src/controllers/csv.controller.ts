@@ -1,19 +1,15 @@
 import { parse } from 'csv-parse'
 import { stringify } from 'csv-stringify'
 import fs from 'fs'
+import { getBrandsForEachCategory } from '../businessLogic/brandsBusinessLogic'
+import { getQuantityForEachCategory } from '../businessLogic/categoryBusinessLogic'
 import {
-  getAverageQuantity,
-  getBestSellingBrand,
-  getElementWithHighestOccurence
-} from '../helpers/csv.helpers'
-const parser = parse(
-  {
-    columns: true
-  },
-  function (err, records) {
-    console.log(records)
-  }
-)
+  getElementsWithAverage,
+  getElementsWithHighestOccuerence
+} from '../csvFileOperations/csvFileOperations'
+import { AverageQuantity, MostSellingBrand, Quantity } from '../routes/api/types'
+import { CategoryWithBrands } from './../routes/api/types'
+
 export const createCSVFile = async (
   files: {
     data: any
@@ -44,32 +40,18 @@ export const processCSVData = async (fileName: string, lineCount: number): Promi
       )
       .on('data', (data) => results.push(data))
       .on('end', async () => {
-        const bestSellingBrand: {
-          category: any
-          brand: string
-        } = getBestSellingBrand(results)
-        const averageQuantity: {
-          category: any
-          average: number
-        } = getAverageQuantity(results)
-        const outPut1 = Object.keys(averageQuantity).map((key) => ({
-          category: key,
-          average: averageQuantity[key as keyof typeof averageQuantity] / (lineCount - 1)
-        }))
-        const outPut2 = Object.keys(bestSellingBrand).map((key) => ({
-          category: key,
-          brand: getElementWithHighestOccurence(
-            Object.values(bestSellingBrand[key as keyof typeof bestSellingBrand])
-          )
-        }))
-        console.log(outPut2)
+        const quantity: Quantity = getQuantityForEachCategory(results)
+        const categoryWithBrands: CategoryWithBrands = getBrandsForEachCategory(results)
+        const elementsWithAverage: AverageQuantity[] = getElementsWithAverage(quantity, lineCount)
+        const elementsWithHighestOccuerence: MostSellingBrand[] =
+          getElementsWithHighestOccuerence(categoryWithBrands)
         await createCSVFile([
           {
-            data: outPut1,
+            data: elementsWithAverage,
             fileName: `0_${fileName}`
           },
           {
-            data: outPut2,
+            data: elementsWithHighestOccuerence,
             fileName: `1_${fileName}`
           }
         ])

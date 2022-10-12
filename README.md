@@ -1,7 +1,9 @@
-# image-processing-api
+# csv-processing-api
+
 ## Overview
 
-This project is developed for Udacity Full-stack web development nanodegree, to prove my ability to use what i've learned in real-world scenarios.
+This project is developed to solve Problem solving case with a csv file that keeps a record of n order details for orders made at an online
+shopping website
 
 ## How to build and start the server
 
@@ -23,46 +25,40 @@ This command will build the typeScript code into JavaScript and save them in the
 
 This command will start the server running on port `3000`.
 
-## Testing and Linting
+It will create 2 csv files with sampleData right after the server starts
 
-Here, I will show you how to run the test and also how to check that our code respects all the eslint rules.
+- to test the processing of this data, you need to run the endpoint, either in the browser or inside the terminal
 
-### 1. Linting
+## Endpoint
 
-`yarn lint`
+### `/api/csv/`
+
+Method: `get`
+
+    From the browser: `localhost:3000/api/csv/`
+
+#### run endpoint in terminal
+
+    to run the endpoint inside the terminal to process the data run: `curl localhost:3000/api/csv/`
+
+## Testing
+
+Here, I will show you how to run the test.
 
 ### 2. Testing
 
 `yarn test`
 
-## Endpoint
-
-
-### `/api/images/?width=<width>&height=<height>&filename=<image_name>`
-
-Method: `get`
-URL Params: `height` and `width` - the height or width of the image in pixels
-Query Param: `filename` - the specific image you are requesting.
-
-    For example: `localhost:3000/api/images/?width=600&height=500&filename=fjord`
-
-#### Available Image options
-
-1. `encenadaport`
-2. `fjord`
-3. `icelandwaterfall`
-4. `palmtunnel`
-5. `santamonica`
+- for the tests to run and succeed you have to keep the two sample files empty/filled (either way in the test the will be overwritten) inside the csvFiles folder, because we need the csvFiles directory in the build file for the tests to work!
 
 ### Functionality
 
-- User can query endpoint using various params and queries to retrieve an image with a specified height and width.
-- All images requested will be saved to disk.
-- There is a cache layer. If a user requests an image size that has already been requested, there is no need for resizing and the previously resized image will be returned.
+- User can create csv files from array of objects using createCSVFile function.
+- User can process csv files created and get output created in new csv files with the processCSVData function.
 
 ## Built With
 
 - [NodeJS](https://nodejs.org/en/) - The JavaScript runtime.
 - [Express](https://expressjs.com/) - The web framework.
 - [TypeScript](https://www.typescriptlang.org/) - The language used.
-- [Sharp](https://sharp.pixelplumbing.com/) - NodeJS image processor.
+- [CSV](https://csv.js.org//) - CSV Nodejs suite.
