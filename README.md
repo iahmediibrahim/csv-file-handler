@@ -27,7 +27,7 @@ This command will start the server running on port `3000`.
 
 It will create 2 csv files with sampleData right after the server starts
 
-- to test the processing of this data, you need to run the endpoint, either in the browser or inside the terminal
+- to test the processing of these data, you need to run the endpoint, either in the browser or inside the terminal
 
 ## Endpoint
 
@@ -49,7 +49,7 @@ Here, I will show you how to run the test.
 
 `yarn test`
 
-- for the tests to run and succeed you have to keep the two sample files empty/filled (either way in the test the will be overwritten) inside the csvFiles folder, because we need the csvFiles directory in the build file for the tests to work!
+- for the tests to run and succeed you have to keep the two sample files empty/filled (either way in the test they will be overwritten) inside the csvFiles folder, because we need the csvFiles directory in the build file for the tests to work!
 
 ### Functionality
 
